@@ -1,0 +1,26 @@
+{
+  "name": "crypto-feed-socket",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node newProvider.js && node consumer.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.8.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "firebase": "^11.4.0",
+    "firebase-admin": "^13.1.0",
+    "moment": "^2.30.1",
+    "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "globals": "^16.0.0",
+    "nodemon": "^3.1.9"
+  }
+}
