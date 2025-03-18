@@ -155,7 +155,7 @@ cryptoCompareSocket.on('message', async (data: WebSocket.RawData) => {
                 })
             });
 
-            const resTelegram: TelegramResponse = await response.json();
+            const resTelegram = await response.json();
             console.log('Telegram response:', resTelegram);
             // Save to Firestore using Admin SDK
             await adminDb.collection('market_data').add({
