@@ -11,6 +11,7 @@ dotenv.config();
 const cryptoCompareUrl = `wss://streamer.cryptocompare.com/v2?api_key=${process.env.CRYPTO_COMPARE_APIKEY}`;
 const cryptoCompareSubscription = { 'action': 'SubAdd', 'subs': ['24~BINANCE~BTC~USDT~H'] };
 const PORT = process.env.PORT || 3025;
+const telegram_bot_token = process.env.TELEGRAM_BOT_TOKEN;
 
 // Create Express app and HTTP server
 const app = express();
@@ -106,7 +107,7 @@ cryptoCompareSocket.on('open', () => {
 
 cryptoCompareSocket.on('message', async (data: WebSocket.RawData) => {
     const parsedData = JSON.parse(data.toString());
-    
+
     // Broadcast data to all connected clients
     if (parsedData['TYPE'] === '24') {
         const formattedData: FormattedData = {
@@ -123,6 +124,39 @@ cryptoCompareSocket.on('message', async (data: WebSocket.RawData) => {
         };
 
         try {
+            //send to telegram
+            const messageTelegram = `${parsedData.FROMSYMBOL}/${parsedData.TOSYMBOL}
+            TIMEFRAME: ${parsedData.UNIT}
+            OPEN: ${parsedData.OPEN}
+            HIGH: ${parsedData.HIGH}
+            LOW: ${parsedData.OPEN}
+            CLOSE: ${parsedData.OPEN}
+            VOLUMEFROM: ${parsedData.VOLUMEFROM}
+            VOLUMETO: ${parsedData.VOLUMETO}
+            TIMESTAMP: ${parsedData.TS}
+            DATE: ${moment.unix(parsedData.TS).format('ddd, DD MMM YYYY HH:mm')}
+            TIME DIFFERENCE: ${Math.floor(Date.now() / 1000) - parsedData.TS}
+        `;
+
+            if (!telegram_bot_token) {
+                console.error('Missing TELEGRAM_BOT_TOKEN environment variable');
+                return;
+            }
+
+            const response = await fetch(`https://api.telegram.org/bot${telegram_bot_token}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: "7389805128",
+                    text: messageTelegram
+                })
+            });
+
+            const resTelegram: TelegramResponse = await response.json();
+            console.log('Telegram response:', resTelegram);
             // Save to Firestore using Admin SDK
             await adminDb.collection('market_data').add({
                 ...formattedData,

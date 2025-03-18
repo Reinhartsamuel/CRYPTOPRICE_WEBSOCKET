@@ -4,7 +4,7 @@
   "main": "dist/provider.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/start.js",
+    "start": "node dist/provider.js",
     "dev": "ts-node src/start.ts",
     "provider": "ts-node src/provider.ts",
     "consumer": "ts-node src/consumer.ts"
