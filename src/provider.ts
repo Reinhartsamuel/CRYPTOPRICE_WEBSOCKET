@@ -140,7 +140,7 @@ cryptoCompareSocket.on('message', async (data: WebSocket.RawData) => {
 
             if (!telegram_bot_token) {
                 console.error('Missing TELEGRAM_BOT_TOKEN environment variable');
-                return;
+                // return;
             }
 
             const response = await fetch(`https://api.telegram.org/bot${telegram_bot_token}/sendMessage`, {
@@ -158,11 +158,12 @@ cryptoCompareSocket.on('message', async (data: WebSocket.RawData) => {
             const resTelegram = await response.json();
             console.log('Telegram response:', resTelegram);
             // Save to Firestore using Admin SDK
-            await adminDb.collection('data_feed').add({
+            const res = await adminDb.collection('data_feed').add({
                 ...formattedData,
                 createdAt: new Date()
             });
-            console.log('Formatted Data:', formattedData);
+            console.log('Added document with ID: ', res.id);
+            // console.log('Formatted Data:', formattedData);
         } catch (error) {
             console.error('Error saving to Firestore:', error);
         }
