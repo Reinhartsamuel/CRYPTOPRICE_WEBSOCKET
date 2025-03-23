@@ -95,6 +95,7 @@ interface FormattedData {
     volume_from: number;
     volume_to: number;
     createdAt?: Date;
+    timestamp:number;
 }
 
 // Connect to CryptoCompare WebSocket
@@ -120,7 +121,8 @@ cryptoCompareSocket.on('message', async (data: WebSocket.RawData) => {
             pair: 'USDT_BTC',
             time: parsedData.TS,
             volume_from: parsedData.VOLUMEFROM,
-            volume_to: parsedData.VOLUMETO
+            volume_to: parsedData.VOLUMETO,
+            timestamp: parsedData.TS
         };
 
         try {
